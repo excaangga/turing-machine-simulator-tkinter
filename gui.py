@@ -1,8 +1,15 @@
 from tkinter import *
 from tkinter import ttk
-import tkinter as tk
 import collections
+import os
 
+
+def restart():
+    canvas.delete("all")
+    for widget in frameResult.winfo_children():
+        widget.pack_forget()
+
+##################################################################
 def action(inputSymbol, inputReplace, movement, nextState):
     global head, state, tape
     if tape[head] == inputSymbol:
@@ -18,16 +25,16 @@ def action(inputSymbol, inputReplace, movement, nextState):
 
 window = Tk()
 window.title("Turing Machine Simulator")
-window.geometry('500x500')
+window.geometry('700x700')
 
-title = Label(window, text="Turing Machine Simulator", width=500, anchor=W, background="#3caea3")
+title = Label(window, text="Turing Machine Simulator", width=700, anchor=N, background="#3caea3")
 title.config(font=("Roboto", 20), foreground="white", padx=10, pady=10)
-title.pack()
+title.pack(pady=(0, 20))
 
 # separator = ttk.Separator(orient='horizontal')
 # separator.place(x=0, y=50, relwidth=1, relheight=1)
 
-frameInput = LabelFrame(window, text="input", padx=5, pady=5)
+frameInput = ttk.LabelFrame(window, text="input")
 frameInput.pack(padx=10, pady=10)
 
 input1 = StringVar(window)
@@ -39,27 +46,65 @@ operand.set("+")
 input2 = StringVar(window)
 input2.set("positive integer")
 
-entry1 = Entry(frameInput, textvariable=input1)
-entry1.pack(padx=20, pady=20, side=tk.LEFT)
+entry1 = ttk.Entry(frameInput, textvariable=input1)
+entry1.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
 
-option = OptionMenu(frameInput, operand,"+", "-", "*", "/", "!", "%", "^", "log")
-option.pack(padx=20, pady=20, side=tk.LEFT)
+option = ttk.OptionMenu(frameInput, operand,"+", "-", "*", "/", "!", "%", "^", "log")
+option.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
 
-entry2 = Entry(frameInput, textvariable=input2)
-entry2.pack(padx=20, pady=20, side=tk.LEFT)
+entry2 = ttk.Entry(frameInput, textvariable=input2)
+entry2.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
 
-frameOutput = LabelFrame(window, text="output", padx=5, pady=5)
-frameOutput.pack(padx=10, pady=10)
 
+
+frameOutput = ttk.LabelFrame(window, text="output", width=600)
+
+v = Scrollbar(frameOutput)
+h = Scrollbar(frameOutput, orient=HORIZONTAL)
+v.pack(side=RIGHT, fill=Y)
+h.pack(side=BOTTOM, fill=X)
+canvas = Canvas(frameOutput, width=550, height=400, yscrollcommand=v.set, xscrollcommand=h.set)
+canvas.pack()
+v.config(command=canvas.yview)
+h.config(command=canvas.xview)
+
+frameOutput.pack()
+
+
+
+frameResult = Frame(window)
+frameResult.pack(anchor=CENTER)
 
 
     
 
 ##################################################################
 
+def drawInline(inputLength, x1, x2, y1, y2, counter, tape, head):
+    for j in range (inputLength):
+        x1 += 20
+        x2 += 20
+        if True:
+            box = canvas.create_rectangle(x1, y1, x2+20, y2, fill="white smoke")
+            #print("TESTTTTT", j)
+            cells.append(box)
+            label = canvas.create_text((x1+x2)/2 + 10, (y1+y2)/2, text=tape[j])
+            if head == j:
+                canvas.itemconfig(box, fill="yellow")
+            
+            canvas.config(scrollregion=(0, 0, x1+40, y1+40))
+            canvas.pack(expand=YES, fill=BOTH)
+            counter += 1
+        
+        # else:
+        #     drawInline(inputLength-counter, 0, 0, y1+40, y2+40, counter, tape)
+
+##################################################################
+
 def caller():
-    global temp1, temp2, inputAdd, head, state, tape
+    global temp1, temp2, head, state, tape, cells
     temp1, temp2 = "", ""
+    cells = []
     for i in range (int(input1.get())):
         temp1 += "0"
     for i in range (int(input2.get())):
@@ -71,6 +116,8 @@ def caller():
         tape = ['B'] * inputLength
         i = 1
         head = 1
+        x1, x2 = 0, 0
+        y1, y2 = 20, 40
         for char in inputString:
             tape[i] = char
             i += 1
@@ -79,10 +126,12 @@ def caller():
         acc = False
         X, R, L, B = 'X', 'R', 'L', 'B' #simbol yang diperlukan fungsi
         a = 'a' #simbol adisi
+        increment = 0
         while(oldHead != head):
             oldHead = head
             print(tape, ", head di index ", head, " pada state ", state)
-
+            drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+            increment += 40
             if state == 0:
                 if action('0', X, R, 1) or action(a, B, L, 5):
                     pass
@@ -111,7 +160,8 @@ def caller():
         elements_count = collections.Counter(tape)
         if acc:
             print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
-            Label(frameOutput, text=elements_count['0']).pack()
+            ttk.Label(frameResult, text="Result: ").pack(pady=10)
+            ttk.Label(frameResult, text=elements_count['0']).pack()
         else:
             print("Input tidak diterima di state: ", state)    
 
@@ -179,8 +229,11 @@ def caller():
         else:
             print("Input tidak diterima di state: ", state)    
 
-submit = Button(frameInput, text="run", command=caller)
-submit.pack(side=tk.BOTTOM)
+ttk.Style().configure("TButton", padding=5, relief="flat")
+submit = ttk.Button(frameInput, text="run", command=caller, width=7)
+reset = ttk.Button(frameInput, text="reset", command=restart, width=7)
+submit.pack(side=LEFT, anchor=CENTER, padx=10)
+reset.pack(side=LEFT, anchor=CENTER, padx=10)
 
 
 window.mainloop()
