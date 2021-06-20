@@ -260,88 +260,92 @@ def caller():
 
     # % operation
     elif operand.get() == "%":
-        inputString = temp1 + "m" + temp2
-        inputLength = len(inputString) * 2
-        tape = ['B'] * inputLength
-        i = 1
-        head = 1
-        x1, x2 = 0, 0
-        y1, y2 = 20, 40
-        for char in inputString:
-            tape[i] = char
-            i += 1
-        state = 0
-        oldHead = -1
-        acc = False
-        # just "as-usual" turing symbols
-        X, Y, R, L, B = 'X', 'Y', 'R', 'L', 'B'
-        # symbol for modulation
-        m = 'm'
-        increment = 0
-        # a whole movement block
-        while(oldHead != head):
-            oldHead = head
-            print(tape, ", head di index ", head, " pada state ", state)
-            drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
-            increment += 40
-            if state == 0:
-                if action('0', '0', R, 0) or action(m, m, R, 1):
-                    pass
-    
-            elif state == 1:
-                if action('0', '0', R, 1) or action(B, m, L, 2):
-                    pass
-            
-            elif state == 2:
-                if action(m, m, R, 7) or action('0', X, L, 3):
-                    pass
-            
-            elif state == 3:
-                if action('0', '0', L, 3) or action(m, m, L, 4):
-                    pass
-            
-            elif state == 4:
-                if action(B, B, R, 8) or action(Y, Y, L, 4) or action('0', Y, R, 5):
-                    pass
+        if temp1 != "" and temp2 != "":
+            inputString = temp1 + "m" + temp2
+            inputLength = len(inputString) * 2
+            tape = ['B'] * inputLength
+            i = 1
+            head = 1
+            x1, x2 = 0, 0
+            y1, y2 = 20, 40
+            for char in inputString:
+                tape[i] = char
+                i += 1
+            state = 0
+            oldHead = -1
+            acc = False
+            # just "as-usual" turing symbols
+            X, Y, R, L, B = 'X', 'Y', 'R', 'L', 'B'
+            # symbol for modulation
+            m = 'm'
+            increment = 0
+            # a whole movement block
+            while(oldHead != head):
+                oldHead = head
+                print(tape, ", head di index ", head, " pada state ", state)
+                drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+                increment += 40
+                if state == 0:
+                    if action('0', '0', R, 0) or action(m, m, R, 1):
+                        pass
+        
+                elif state == 1:
+                    if action('0', '0', R, 1) or action(B, m, L, 2):
+                        pass
+                
+                elif state == 2:
+                    if action(m, m, R, 7) or action('0', X, L, 3):
+                        pass
+                
+                elif state == 3:
+                    if action('0', '0', L, 3) or action(m, m, L, 4):
+                        pass
+                
+                elif state == 4:
+                    if action(B, B, R, 8) or action(Y, Y, L, 4) or action('0', Y, R, 5):
+                        pass
 
-            elif state == 5:
-                if action(Y, Y, R, 5) or action(m, m, R, 6):
-                    pass
+                elif state == 5:
+                    if action(Y, Y, R, 5) or action(m, m, R, 6):
+                        pass
 
-            elif state == 6:
-                if action('0', '0', R, 6) or action(X, X, L, 2):    
-                    pass
+                elif state == 6:
+                    if action('0', '0', R, 6) or action(X, X, L, 2):    
+                        pass
 
-            elif state == 7:
-                if action(m, m, L, 2) or action(X, '0', R, 7):
-                    pass
+                elif state == 7:
+                    if action(m, m, L, 2) or action(X, '0', R, 7):
+                        pass
 
-            elif state == 8:
-                if action(Y, B, R, 8) or action(m, B, R, 9):
-                    pass
+                elif state == 8:
+                    if action(Y, B, R, 8) or action(m, B, R, 9):
+                        pass
 
-            elif state == 9:
-                if action('0', B, R, 9) or action(X, '0', R, 9) or action(m, B, L, 10):
-                    pass
-            
-            elif state == 10:
-                if action('0', B, L, 11):
-                    pass
+                elif state == 9:
+                    if action('0', B, R, 9) or action(X, '0', R, 9) or action(m, B, L, 10):
+                        pass
+                
+                elif state == 10:
+                    if action('0', B, L, 11):
+                        pass
 
-            elif state == 11:
-                acc = True
+                elif state == 11:
+                    acc = True
 
-        # make a counter for the 0's in the tape as the final result
-        elements_count = collections.Counter(tape)
-        if acc:
-            print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
-            # RESULT | labels
-            ttk.Label(frameResult, text="Result: ").pack(pady=10)
-            ttk.Label(frameResult, text=elements_count['0']).pack()
+            # make a counter for the 0's in the tape as the final result
+            elements_count = collections.Counter(tape)
+            if acc:
+                print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+                # RESULT | labels
+                ttk.Label(frameResult, text="Result: ").pack(pady=10)
+                ttk.Label(frameResult, text=elements_count['0']).pack()
+            else:
+                print("Input tidak diterima di state: ", state)
+                ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+                ttk.Label(frameResult, text=state).pack()
         else:
-            print("Input tidak diterima di state: ", state)
-            ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
-            ttk.Label(frameResult, text=state).pack()
+            print("Input tidak bisa diproses")
+            ttk.Label(frameResult, text="Input can't be processed").pack(pady=10)
 
 
 ttk.Style().configure("TButton", padding=5, relief="flat")
