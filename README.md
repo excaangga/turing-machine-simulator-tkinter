@@ -1,7 +1,5 @@
 <!-- TITLE -->
 <h2 align="center">Turing Machine Simulator</h2>
-<br />
-<h4 align="center">(Desktop GUI with Tkinter)</h4>
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
@@ -28,7 +26,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Turing Machine on GUI Screenshot][product-screenshot]]
+![Turing Machine on GUI Screenshot][product-screenshot]
 
 This project's made for a task in "Language Theory and Automata" on our college. We made a simulator of Turing Machine 
 that works for basic mathematical operation and show the process as well as the result on GUI.
