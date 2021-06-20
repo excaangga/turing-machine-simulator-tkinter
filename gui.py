@@ -28,7 +28,7 @@ def action(inputSymbol, inputReplace, movement, nextState):
 # this is basically the window creation
 window = Tk()
 window.title("Turing Machine Simulator")
-window.geometry('700x700')
+window.geometry('700x750')
 
 # titling the window
 title = Label(window, text="Turing Machine Simulator", width=700, anchor=N, background="#3caea3")
@@ -58,13 +58,19 @@ input2.set("positive integer")
 entry1 = ttk.Entry(frameInput, textvariable=input1)
 entry1.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
 
-# function to detect change in option and remove entry2 when the operand is log
+# function to detect change in option
 def opt(event):
+    global warning
     if operand.get() == "log(2)":
         entry2.pack_forget()
         input2.set(0)
     else:
         entry2.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
+    if operand.get() == "-":
+        warning = ttk.Label(frameWarning, text="Entry 1 must be equal or less than Entry 2 to proceed").pack(pady=10, side=BOTTOM)
+    else:
+        for widget in frameWarning.winfo_children():
+            widget.destroy()
 
 # INPUT | option(operand)
 option = ttk.OptionMenu(frameInput, operand,"+", "+", "-", "*", "/", "!", "%", "^", "log(2)", command=opt)
@@ -73,6 +79,10 @@ option.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
 # INPUT | entry2(input2)
 entry2 = ttk.Entry(frameInput, textvariable=input2)
 entry2.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
+
+# make a frame for warnings
+frameWarning = ttk.Frame(window)
+frameWarning.pack()
 
 # make a frame that contains output drawings
 frameOutput = ttk.LabelFrame(window, text="output", width=600)
@@ -430,6 +440,74 @@ def caller():
             
                 elif state == 12:
                     acc = True
+
+            # make a counter for the 0's in the tape as the final result
+            elements_count = collections.Counter(tape)
+            if acc:
+                print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+                # RESULT | labels
+                ttk.Label(frameResult, text="Result: ").pack(pady=10)
+                ttk.Label(frameResult, text=elements_count['0']).pack()
+            else:
+                print("Input tidak diterima di state: ", state)
+                ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+                ttk.Label(frameResult, text=state).pack()
+        else:
+            print("Input tidak bisa diproses")
+            ttk.Label(frameResult, text="Input can't be processed").pack(pady=10)
+
+        # - operation
+    elif operand.get() == "-":
+        if temp1 != "" and temp2 != "" and int(input1.get()) >= int(input2.get()):
+            inputString = temp1 + "X" + temp2
+            inputLength = len(inputString) * 2
+            tape = ['B'] * inputLength
+            i = 1
+            head = 1
+            x1, x2 = 0, 0
+            y1, y2 = 20, 40
+            for char in inputString:
+                tape[i] = char
+                i += 1
+            state = 0
+            oldHead = -1
+            acc = False
+            # just "as-usual" turing symbols
+            X, Y, R, L, B = 'X', 'Y', 'R', 'L', 'B'
+            increment = 0
+            # a whole movement block
+            while(oldHead != head):
+                oldHead = head
+                print(tape, ", head di index ", head, " pada state ", state)
+                drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+                increment += 40
+                if state == 0:
+                    if action('0', '0', R, 0) or action(X, X, R, 1):
+                        pass
+        
+                elif state == 1:
+                    if action('0', '0', R, 1) or action(B, B, L, 2):
+                        pass
+                
+                elif state == 2:
+                    if action('0', B, L, 3) or action(X, B, L,6):
+                        pass
+                
+                elif state == 3:
+                    if action('0', '0', L, 3) or action(X, X, L, 4):
+                        pass
+                
+                elif state == 4:
+                    if action('0', '0', L, 4) or action(B, B, R, 5):
+                        pass
+                
+                elif state == 5:
+                    if action('0', B, R, 0):
+                        pass
+
+                elif state == 6:
+                    acc = True
+
 
             # make a counter for the 0's in the tape as the final result
             elements_count = collections.Counter(tape)
