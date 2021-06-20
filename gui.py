@@ -61,11 +61,12 @@ entry1.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
 # function to detect change in option
 def opt(event):
     global warning
-    if operand.get() == "log(2)":
+    if operand.get() == "log(2)" or operand.get() == "!":
         entry2.pack_forget()
         input2.set(0)
     else:
         entry2.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
+        input2.set("positive integer")
     if operand.get() == "-":
         warning = ttk.Label(frameWarning, text="Entry 1 must be equal or less than Entry 2 to proceed").pack(pady=10, side=BOTTOM)
     else:
@@ -456,7 +457,7 @@ def caller():
             print("Input tidak bisa diproses")
             ttk.Label(frameResult, text="Input can't be processed").pack(pady=10)
 
-        # - operation
+    # - operation
     elif operand.get() == "-":
         if temp1 != "" and temp2 != "" and int(input1.get()) >= int(input2.get()):
             inputString = temp1 + "X" + temp2
@@ -509,6 +510,151 @@ def caller():
                     acc = True
 
 
+            # make a counter for the 0's in the tape as the final result
+            elements_count = collections.Counter(tape)
+            if acc:
+                print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+                # RESULT | labels
+                ttk.Label(frameResult, text="Result: ").pack(pady=10)
+                ttk.Label(frameResult, text=elements_count['0']).pack()
+            else:
+                print("Input tidak diterima di state: ", state)
+                ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+                ttk.Label(frameResult, text=state).pack()
+        else:
+            print("Input tidak bisa diproses")
+            ttk.Label(frameResult, text="Input can't be processed").pack(pady=10)
+
+    # dear my future self, i'm sorry for hardcoding the entire system :( - angga
+    # factorial operation
+    elif operand.get() == "!":
+        if temp1 != "":
+            inputString = temp1
+            # this length is usable for n! where n <= 4 :(
+            inputLength = len(inputString*3) * 10
+            tape = ['B'] * inputLength
+            i = 1
+            head = 1
+            x1, x2 = 0, 0
+            y1, y2 = 20, 40
+            for char in inputString:
+                tape[i] = char
+                i += 1
+            state = 0
+            oldHead = -1
+            acc = False
+            # just "as-usual" turing symbols
+            X, Y, R, L, B = 'X', 'Y', 'R', 'L', 'B'
+            increment = 0
+            # a whole movement block
+            while(oldHead != head):
+                oldHead = head
+                print(tape, ", head di index ", head, " pada state ", state)
+                drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+                increment += 40
+                if state == 0:
+                    if action('0', '0', R, 0) or action(B, '1', L, 1):
+                        pass
+    
+                elif state == 1:
+                    if action('0', '0', L, 1) or action('1', '1', L, 1) or action(B, B, R, 2):
+                        pass
+                
+                elif state == 2:
+                    if action('1', '1', R, 5) or action('0', X, R, 3):
+                        pass
+                
+                elif state == 3:
+                    if action('0', '0', R, 3) or action('1', '1', R, 3) or action(B, '0', L, 4):
+                        pass
+                
+                elif state == 4:
+                    if action('0', '0', L, 4) or action('1', '1', L, 4) or action(X, X, R, 2):
+                        pass
+
+                elif state == 5:
+                    if action('0', '0', R, 5) or action(B, '1', L, 7):
+                        pass
+
+                elif state == 6:
+                    if action('1', '1', L, 6) or action(X, X, L, 6) or action('0', '0', L, 6) or action(B, B, R, 16):    
+                        pass
+
+                elif state == 7:
+                    if action('1', '1', L, 7) or action('0', '0', L, 7) or action(X, '0', L, 7) or action(B, B, R, 8):
+                        pass
+
+                elif state == 8:
+                    if action('0', B, R, 9):
+                        pass
+
+                elif state == 9:
+                    if action('0', X, R, 10) or action('1', '1', L, 6):
+                        pass
+                
+                elif state == 10:
+                    if action('1', '1', R, 11) or action('0', '0', R, 10):
+                        pass
+
+                elif state == 11:
+                    if action('1', '1', L, 14) or action('0', X, R, 12):
+                        pass
+
+                elif state == 12:
+                    if action('0', '0', R, 12) or action('1', '1', R, 12) or action(B, '0', L, 13):
+                        pass
+                
+                elif state == 13:
+                    if action('1', '1', L, 13) or action('0', '0', L, 13) or action(X, X, R, 11):
+                        pass
+                
+                elif state == 14:
+                    if action(X, '0', L, 14) or action('1', '1', L, 15):
+                        pass
+                
+                elif state == 15:
+                    if action('0', '0', L, 15) or action('1', '0', L, 15) or action(X, X, R, 9):
+                        pass
+                
+                elif state == 16:
+                    if action('1', B, R, 25) or action(X, B, R, 17):
+                        pass
+
+                elif state == 17:
+                    if action(X, X, R, 19) or action('1', B, R, 18) or action('0', B, R, 18):
+                        pass
+
+                elif state == 18:
+                    if action('0', B, R, 18) or action(X, X, R, 22) or action('1', B, L, 24):    
+                        pass
+
+                elif state == 19:
+                    if action('1', '1', R, 20) or action(X, X, R, 19) or action('0', '0', R, 19):
+                        pass
+
+                elif state == 20:
+                    if action(X, X, R, 20) or action('0', '0', R, 20) or action('1', '1', L, 21):
+                        pass
+
+                elif state == 21:
+                    if action(X, X, L, 21) or action('0', X, L, 6) or action('1', X, L, 6):
+                        pass
+                
+                elif state == 22:
+                    if action(X, X, R, 22) or action('1', '1', R, 22) or action('0', '0', R, 22) or action(B, '1', L, 23):
+                        pass
+
+                elif state == 23:
+                    if action(X, '0', R, 23) or action('0', '0', L, 23) or action('1', '1', L, 23) or action(B, B, R, 9):
+                        pass
+
+                elif state == 24:
+                    acc = True
+                    pass
+
+                elif state == 25:
+                    if action('0', '0', R, 25) or action('1', B, R, 25) or action(B, B, H, 24):
+                        pass
             # make a counter for the 0's in the tape as the final result
             elements_count = collections.Counter(tape)
             if acc:
