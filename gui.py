@@ -1,3 +1,6 @@
+# "Bismillah" first before reading this whole untested __masterpiece__ :"v
+
+
 from tkinter import *
 from tkinter import ttk
 import collections
@@ -66,6 +69,7 @@ def opt(event):
         input2.set(0)
     else:
         entry2.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
+        input1.set("positive integer")
         input2.set("positive integer")
     if operand.get() == "-":
         warning = ttk.Label(frameWarning, text="Entry 1 must be equal or less than Entry 2 to proceed").pack(pady=10, side=BOTTOM)
@@ -836,6 +840,103 @@ def caller():
             print("Input tidak diterima di state: ", state)
             ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
             ttk.Label(frameResult, text=state).pack()
+
+    # * operation
+    elif operand.get() == "*":
+        inputString = temp1 + "m" + temp2
+        inputLength = len(inputString) * 3
+        tape = ['B'] * inputLength
+        i = 1
+        head = 1
+        x1, x2 = 0, 0
+        y1, y2 = 20, 40
+        for char in inputString:
+            tape[i] = char
+            i += 1
+        state = 0
+        oldHead = -1
+        acc = False
+        # just "as-usual" turing symbols
+        X, Y, R, L, B = 'X', 'Y', 'R', 'L', 'B'
+        # symbol for multiplication
+        m = 'm'
+        increment = 0
+        # a whole movement block
+        while(oldHead != head and head != -1):
+            oldHead = head
+            print(tape, ", head di index ", head, " pada state ", state)
+            drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+            increment += 40
+            if state == 0:
+                if action('0', '0', R, 0) or action(m, m, R, 1):
+                    pass
+
+            elif state == 1:
+                if action('0', '0', R, 1) or action(B, m, L, 2):
+                    pass
+
+            elif state == 2:
+                if action(m, m, R, 3) or action('0', '0', L, 2):
+                    pass
+
+            elif state == 3:
+                if action(X, X, R, 3) or action(m, B, R, 12) or action('0', X, L, 4):
+                    pass
+
+            elif state == 4:
+                if action(X, X, L, 4) or action(m, m, L, 5):
+                    pass
+
+            elif state == 5:
+                if action(Y, Y, L, 5) or action('0', Y, R, 6) or action(B, B, R, 11):
+                    pass
+
+            elif state == 6:
+                if action(Y, Y, R, 6) or action(m, m, R, 7):
+                    pass
+            
+            elif state == 7:
+                if action('0', '0', R, 7) or action(X, X, R, 7) or action(m, m, R, 8):
+                    pass
+
+            elif state == 8:
+                if action('0', '0', R, 8) or action(B, '0', L, 9):
+                    pass
+
+            elif state == 9:
+                if action('0', '0', L, 9) or action(m, m, L, 10):
+                    pass
+
+            elif state == 10:
+                if action('0', '0', L, 10) or action(X, X, L, 10) or action(m, m, L, 5):
+                    pass
+
+            elif state == 11:
+                if action(Y, '0', R, 11) or action(m, m, R, 3):
+                    pass
+
+            elif state == 12:
+                if action('0', '0', L, 13)or action(X, B, L, 13) or action(m, B, L, 13) or action('0', B, L, 13):
+                    acc = False
+                    pass
+            
+            elif state == 13:
+                if action(B, B, L, 12) or action(X, B, L, 13) or action(m, B, L, 13) or action('0', B, L, 13):
+                    acc = True
+                    pass
+
+        # make a counter for the 0's in the tape as the final result
+        elements_count = collections.Counter(tape)
+        if acc:
+            print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+            # RESULT | labels
+            ttk.Label(frameResult, text="Result: ").pack(pady=10)
+            ttk.Label(frameResult, text=elements_count['0']).pack()
+        else:
+            print("Input tidak diterima di state: ", state)
+            ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+            ttk.Label(frameResult, text=state).pack()
+
 
 ttk.Style().configure("TButton", padding=5, relief="flat")
 submit = ttk.Button(frameInput, text="run", command=caller, width=7)
