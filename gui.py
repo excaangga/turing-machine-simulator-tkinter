@@ -177,7 +177,9 @@ def caller():
             ttk.Label(frameResult, text="Result: ").pack(pady=10)
             ttk.Label(frameResult, text=elements_count['0']).pack()
         else:
-            print("Input tidak diterima di state: ", state)    
+            print("Input tidak diterima di state: ", state)
+            ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+            ttk.Label(frameResult, text=state).pack()  
 
     # / operation
     elif operand.get() == "/":
@@ -252,7 +254,9 @@ def caller():
             ttk.Label(frameResult, text="Result: ").pack(pady=10)
             ttk.Label(frameResult, text=elements_count['0']).pack()
         else:
-            print("Input tidak diterima di state: ", state)    
+            print("Input tidak diterima di state: ", state)
+            ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+            ttk.Label(frameResult, text=state).pack()
 
     # % operation
     elif operand.get() == "%":
@@ -335,7 +339,9 @@ def caller():
             ttk.Label(frameResult, text="Result: ").pack(pady=10)
             ttk.Label(frameResult, text=elements_count['0']).pack()
         else:
-            print("Input tidak diterima di state: ", state)    
+            print("Input tidak diterima di state: ", state)
+            ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+            ttk.Label(frameResult, text=state).pack()
 
 
 ttk.Style().configure("TButton", padding=5, relief="flat")
