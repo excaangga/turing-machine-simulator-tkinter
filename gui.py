@@ -28,7 +28,7 @@ def action(inputSymbol, inputReplace, movement, nextState):
 # this is basically the window creation
 window = Tk()
 window.title("Turing Machine Simulator")
-window.geometry('700x700')
+window.geometry('700x750')
 
 # titling the window
 title = Label(window, text="Turing Machine Simulator", width=700, anchor=N, background="#3caea3")
@@ -47,7 +47,7 @@ input1.set("positive integer")
 # INPUT | option(operand)
 # this is the param
 operand = StringVar(window)
-operand.set("+")
+operand.set("")
 
 # INPUT | entry2(input2)
 # this is the param
@@ -58,13 +58,31 @@ input2.set("positive integer")
 entry1 = ttk.Entry(frameInput, textvariable=input1)
 entry1.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
 
+# function to detect change in option
+def opt(event):
+    global warning
+    if operand.get() == "log(2)":
+        entry2.pack_forget()
+        input2.set(0)
+    else:
+        entry2.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
+    if operand.get() == "-":
+        warning = ttk.Label(frameWarning, text="Entry 1 must be equal or less than Entry 2 to proceed").pack(pady=10, side=BOTTOM)
+    else:
+        for widget in frameWarning.winfo_children():
+            widget.destroy()
+
 # INPUT | option(operand)
-option = ttk.OptionMenu(frameInput, operand,"+", "-", "*", "/", "!", "%", "^", "log")
+option = ttk.OptionMenu(frameInput, operand,"+", "+", "-", "*", "/", "!", "%", "^", "log(2)", command=opt)
 option.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
 
 # INPUT | entry2(input2)
 entry2 = ttk.Entry(frameInput, textvariable=input2)
 entry2.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
+
+# make a frame for warnings
+frameWarning = ttk.Frame(window)
+frameWarning.pack()
 
 # make a frame that contains output drawings
 frameOutput = ttk.LabelFrame(window, text="output", width=600)
@@ -347,12 +365,171 @@ def caller():
             print("Input tidak bisa diproses")
             ttk.Label(frameResult, text="Input can't be processed").pack(pady=10)
 
+    # binary log operation
+    elif operand.get() == "log(2)":
+        if temp1 != "" and int(input1.get()) % 2 == 0:
+            inputString = temp1
+            inputLength = len(inputString) * 2
+            tape = ['B'] * inputLength
+            i = 1
+            head = 1
+            x1, x2 = 0, 0
+            y1, y2 = 20, 40
+            for char in inputString:
+                tape[i] = char
+                i += 1
+            state = 0
+            oldHead = -1
+            acc = False
+            # just "as-usual" turing symbols
+            X, Y, R, L, B = 'X', 'Y', 'R', 'L', 'B'
+            increment = 0
+            # a whole movement block
+            while(oldHead != head):
+                oldHead = head
+                print(tape, ", head di index ", head, " pada state ", state)
+                drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+                increment += 40
+                if state == 0:
+                    if action('0', '0', R, 1) or action(B, B, R, 12):
+                        pass
+                
+                elif state == 1:
+                    if action('0', '0', R, 2) or action(B, B, L, 11):
+                        pass
+                
+                elif state == 2:
+                    if action('0', X, R, 3) or action(B, B, L, 11):
+                        pass
+                
+                elif state == 3:
+                    if action(X, X, R, 3) or action('0', X, L, 4) or action(B, B, L, 7):
+                        pass
+                
+                elif state == 4:
+                    if action(Y, Y, L, 4) or action('0', '0', L, 4) or action(X, X, L, 4) or action(B, B, R, 5):
+                        pass
+
+                elif state == 5:
+                    if action('0', Y, R, 5) or action(Y, '0', R, 6) or action(X, '0', R, 6):
+                        pass
+
+                elif state == 6:
+                    if action(Y, Y, R, 6) or action('0', '0', R, 6) or action(X, X, R, 3):    
+                        pass
+
+                elif state == 7:
+                    if action(Y, Y, L, 7) or action('0', '0', L, 7) or action(X, B, L, 7) or action(B, B, R, 8):
+                        pass
+
+                elif state == 8:
+                    if action(Y, '0', R, 8) or action('0', '0', R, 9):
+                        pass
+
+                elif state == 9:
+                    if action(Y, '0', R, 9) or action('0', '0', R, 10) or action(B, B, L, 11):
+                        pass
+                
+                elif state == 10:
+                    if action(Y, '0', R, 10) or action('0', '0', R, 10) or action(B, B, R, 12):
+                        pass
+
+                elif state == 11:
+                    if action('0', B, R, 12):
+                        pass
+            
+                elif state == 12:
+                    acc = True
+
+            # make a counter for the 0's in the tape as the final result
+            elements_count = collections.Counter(tape)
+            if acc:
+                print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+                # RESULT | labels
+                ttk.Label(frameResult, text="Result: ").pack(pady=10)
+                ttk.Label(frameResult, text=elements_count['0']).pack()
+            else:
+                print("Input tidak diterima di state: ", state)
+                ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+                ttk.Label(frameResult, text=state).pack()
+        else:
+            print("Input tidak bisa diproses")
+            ttk.Label(frameResult, text="Input can't be processed").pack(pady=10)
+
+        # - operation
+    elif operand.get() == "-":
+        if temp1 != "" and temp2 != "" and int(input1.get()) >= int(input2.get()):
+            inputString = temp1 + "X" + temp2
+            inputLength = len(inputString) * 2
+            tape = ['B'] * inputLength
+            i = 1
+            head = 1
+            x1, x2 = 0, 0
+            y1, y2 = 20, 40
+            for char in inputString:
+                tape[i] = char
+                i += 1
+            state = 0
+            oldHead = -1
+            acc = False
+            # just "as-usual" turing symbols
+            X, Y, R, L, B = 'X', 'Y', 'R', 'L', 'B'
+            increment = 0
+            # a whole movement block
+            while(oldHead != head):
+                oldHead = head
+                print(tape, ", head di index ", head, " pada state ", state)
+                drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+                increment += 40
+                if state == 0:
+                    if action('0', '0', R, 0) or action(X, X, R, 1):
+                        pass
+        
+                elif state == 1:
+                    if action('0', '0', R, 1) or action(B, B, L, 2):
+                        pass
+                
+                elif state == 2:
+                    if action('0', B, L, 3) or action(X, B, L,6):
+                        pass
+                
+                elif state == 3:
+                    if action('0', '0', L, 3) or action(X, X, L, 4):
+                        pass
+                
+                elif state == 4:
+                    if action('0', '0', L, 4) or action(B, B, R, 5):
+                        pass
+                
+                elif state == 5:
+                    if action('0', B, R, 0):
+                        pass
+
+                elif state == 6:
+                    acc = True
+
+
+            # make a counter for the 0's in the tape as the final result
+            elements_count = collections.Counter(tape)
+            if acc:
+                print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+                # RESULT | labels
+                ttk.Label(frameResult, text="Result: ").pack(pady=10)
+                ttk.Label(frameResult, text=elements_count['0']).pack()
+            else:
+                print("Input tidak diterima di state: ", state)
+                ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+                ttk.Label(frameResult, text=state).pack()
+        else:
+            print("Input tidak bisa diproses")
+            ttk.Label(frameResult, text="Input can't be processed").pack(pady=10)
+
 
 ttk.Style().configure("TButton", padding=5, relief="flat")
 submit = ttk.Button(frameInput, text="run", command=caller, width=7)
 reset = ttk.Button(frameInput, text="reset", command=restart, width=7)
-submit.pack(side=LEFT, anchor=CENTER, padx=10)
-reset.pack(side=LEFT, anchor=CENTER, padx=10)
+reset.pack(side=RIGHT, anchor=CENTER, padx=10)
+submit.pack(side=RIGHT, anchor=CENTER, padx=10)
 
 
 window.mainloop()
