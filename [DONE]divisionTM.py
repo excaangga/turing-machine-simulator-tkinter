@@ -62,7 +62,7 @@ while(oldHead != head):
             pass
 
     elif state == 8:
-        if action(Y, '0', R, 8) or action('0', B, R, 8) or action(B, B, R, 9):
+        if action(Y, '0', R, 8) or action('0', B, R, 8) or action(B, B, L, 9):
             pass
 
     elif state == 9:
