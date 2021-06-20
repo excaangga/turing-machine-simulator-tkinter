@@ -1,6 +1,5 @@
 import collections
 
-
 def action(inputSymbol, inputReplace, movement, nextState):
     global head, state
     if tape[head] == inputSymbol:
@@ -13,9 +12,8 @@ def action(inputSymbol, inputReplace, movement, nextState):
         return True
     return False
 
-
 inputString = input("Masukkan input: ")
-inputLength = len(inputString) * 2
+inputLength = len(inputString) ** 4
 tape = ['B'] * inputLength
 i = 1
 head = 1
@@ -25,62 +23,42 @@ for char in inputString:
 state = 0
 oldHead = -1
 acc = False
-X, Y, R, L, B = 'X', 'Y', 'R', 'L', 'B'  # simbol yang diperlukan fungsi
-m = 'm'  # simbol divisi
+X, R, L, B, M = 'X', 'R', 'L', 'B', 'M' # simbol yang diperlukan fungsi
+
 while(oldHead != head):
     oldHead = head
     print(tape, ", head di index ", head, " pada state ", state)
 
     if state == 0:
-        if action('0', '0', R, 0) or action(m, m, R, 1):
+        if action('0', B, R, 1) or action(M, B, R, 6):
             pass
 
     elif state == 1:
-        if action('0', '0', R, 1) or action(B, m, L, 2):
+        if action('0', '0', R, 1) or action(M, M, R, 2):
             pass
 
     elif state == 2:
-        if action('0', '0', L, 2) or action(m, m, R, 3):
+        if action('0', X, R, 3) or action(M, M, L, 5):
             pass
 
     elif state == 3:
-        if action(X, X, R, 3) or action('0', X, L, 4) or action(m, B, R, 12):
+        if action('0', '0', R, 3) or action(M, M, R, 3) or action(B, '0', L, 4):
             pass
 
     elif state == 4:
-        if action(X, X, L, 4) or action(m, m, L, 5):
+        if action('0', '0', L, 4) or action(M, M, L, 4) or action(X, X, R, 2):
             pass
 
     elif state == 5:
-        if action(Y, Y, L, 5) or action(0, Y, R, 6) or action(B, B, R, 11):
+        if action('0', '0', L, 5) or action(M, M, L, 5) or action(X, '0', L, 5) or action(B, B, R, 0):
             pass
 
     elif state == 6:
-        if action(m, m, R, 7) or action(Y, Y, R, 6):
+        if action('0', B, R, 6) or action(M, B, R, 7):
             pass
 
     elif state == 7:
-        if action('0', '0', R, 7) or action(X, X, R, 7) or action(m, m, R, 8):
-            pass
-
-    elif state == 8:
-        if action('0', '0', R, 8) or action(B, '0', L, 9):
-            pass
-
-    elif state == 9:
-        if action('0', '0', L, 9) or action(m, m, L, 10):
-            pass
-
-    elif state == 10:
-        if action('0', '0', L, 10) or action(X, X, L, 10) or action(m, m, L, 5):
-            pass
-
-    elif state == 11:
-       if action(Y, 0, R, 11) or (m, m, R, 3):
-            pass
-
-    elif state == 12:
-       acc = True     
+        acc = True
 
 elements_count = collections.Counter(tape)
 if acc:
