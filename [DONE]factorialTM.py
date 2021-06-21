@@ -1,5 +1,6 @@
 import collections
 
+
 def action(inputSymbol, inputReplace, movement, nextState):
     global head, state
     if tape[head] == inputSymbol:
@@ -14,6 +15,7 @@ def action(inputSymbol, inputReplace, movement, nextState):
         return True
     return False
 
+
 inputString = input("Masukkan input: ")
 inputLength = len(inputString) ** 4
 tape = ['B'] * inputLength
@@ -25,7 +27,7 @@ for char in inputString:
 state = 0
 oldHead = -1
 acc = False
-X, Y, R, L, H, B = 'X', 'Y', 'R', 'L', 'H', 'B' #simbol yang diperlukan fungsi
+X, Y, R, L, H, B = 'X', 'Y', 'R', 'L', 'H', 'B'  # simbol yang diperlukan fungsi
 while(oldHead != head):
     oldHead = head
     print(tape, ", head di index ", head, " pada state ", state)
@@ -33,19 +35,19 @@ while(oldHead != head):
     if state == 0:
         if action('0', '0', R, 0) or action(B, '1', L, 1):
             pass
-    
+
     elif state == 1:
         if action('0', '0', L, 1) or action('1', '1', L, 1) or action(B, B, R, 2):
             pass
-    
+
     elif state == 2:
         if action('1', '1', R, 5) or action('0', X, R, 3):
             pass
-    
+
     elif state == 3:
         if action('0', '0', R, 3) or action('1', '1', R, 3) or action(B, '0', L, 4):
             pass
-    
+
     elif state == 4:
         if action('0', '0', L, 4) or action('1', '1', L, 4) or action(X, X, R, 2):
             pass
@@ -55,7 +57,7 @@ while(oldHead != head):
             pass
 
     elif state == 6:
-        if action('1', '1', L, 6) or action(X, X, L, 6) or action('0', '0', L, 6) or action(B, B, R, 16):    
+        if action('1', '1', L, 6) or action(X, X, L, 6) or action('0', '0', L, 6) or action(B, B, R, 16):
             pass
 
     elif state == 7:
@@ -69,7 +71,7 @@ while(oldHead != head):
     elif state == 9:
         if action('0', X, R, 10) or action('1', '1', L, 6):
             pass
-    
+
     elif state == 10:
         if action('1', '1', R, 11) or action('0', '0', R, 10):
             pass
@@ -81,19 +83,19 @@ while(oldHead != head):
     elif state == 12:
         if action('0', '0', R, 12) or action('1', '1', R, 12) or action(B, '0', L, 13):
             pass
-    
+
     elif state == 13:
         if action('1', '1', L, 13) or action('0', '0', L, 13) or action(X, X, R, 11):
             pass
-    
+
     elif state == 14:
         if action(X, '0', L, 14) or action('1', '1', L, 15):
             pass
-    
+
     elif state == 15:
         if action('0', '0', L, 15) or action('1', '0', L, 15) or action(X, X, R, 9):
             pass
-    
+
     elif state == 16:
         if action('1', B, R, 25) or action(X, B, R, 17):
             pass
@@ -103,7 +105,7 @@ while(oldHead != head):
             pass
 
     elif state == 18:
-        if action('0', B, R, 18) or action(X, X, R, 22) or action('1', B, L, 24):    
+        if action('0', B, R, 18) or action(X, X, R, 22) or action('1', B, L, 24):
             pass
 
     elif state == 19:
@@ -117,7 +119,7 @@ while(oldHead != head):
     elif state == 21:
         if action(X, X, L, 21) or action('0', X, L, 6) or action('1', X, L, 6):
             pass
-    
+
     elif state == 22:
         if action(X, X, R, 22) or action('1', '1', R, 22) or action('0', '0', R, 22) or action(B, '1', L, 23):
             pass
@@ -136,6 +138,7 @@ while(oldHead != head):
 
 elements_count = collections.Counter(tape)
 if acc:
-    print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+    print("Input halt dan diterima di state: ", state,
+          " dengan hasil: ", elements_count['0'])
 else:
-    print("Input tidak diterima di state: ", state)    
+    print("Input tidak diterima di state: ", state)

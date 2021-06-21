@@ -1,6 +1,7 @@
 import collections
 from typing import AsyncIterable
 
+
 def action(inputSymbol, inputReplace, movement, nextState):
     global head, state
     if tape[head] == inputSymbol:
@@ -13,6 +14,7 @@ def action(inputSymbol, inputReplace, movement, nextState):
         return True
     return False
 
+
 inputString = input("Masukkan input: ")
 inputLength = len(inputString) * 3
 tape = ['B'] * inputLength
@@ -24,7 +26,7 @@ for char in inputString:
 state = 0
 oldHead = -1
 acc = False
-X, Y, R, L, B = 'X', 'Y', 'R', 'L', 'B' # simbol yang diperlukan fungsi
+X, Y, R, L, B = 'X', 'Y', 'R', 'L', 'B'  # simbol yang diperlukan fungsi
 m = "m"
 
 while(oldHead != head and head != -1):
@@ -58,7 +60,7 @@ while(oldHead != head and head != -1):
     elif state == 6:
         if action(Y, Y, R, 6) or action(m, m, R, 7):
             pass
-    
+
     elif state == 7:
         if action('0', '0', R, 7) or action(X, X, R, 7) or action(m, m, R, 8):
             pass
@@ -80,10 +82,10 @@ while(oldHead != head and head != -1):
             pass
 
     elif state == 12:
-        if action('0', '0', L, 13)or action(X, B, L, 13) or action(m, B, L, 13) or action('0', B, L, 13):
+        if action('0', '0', L, 13) or action(X, B, L, 13) or action(m, B, L, 13) or action('0', B, L, 13):
             acc = False
             pass
-    
+
     elif state == 13:
         if action(B, B, L, 12) or action(X, B, L, 13) or action(m, B, L, 13) or action('0', B, L, 13):
             acc = True

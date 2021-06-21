@@ -6,6 +6,8 @@ from tkinter import ttk
 import collections
 
 # this block is for restarting the operation
+
+
 def restart():
     canvas.delete("all")
     for widget in frameResult.winfo_children():
@@ -14,6 +16,8 @@ def restart():
 ##################################################################
 
 # this block handles the turing tape movement
+
+
 def action(inputSymbol, inputReplace, movement, nextState):
     global head, state, tape
     if tape[head] == inputSymbol:
@@ -28,13 +32,15 @@ def action(inputSymbol, inputReplace, movement, nextState):
 
 ##################################################################
 
+
 # this is basically the window creation
 window = Tk()
 window.title("Turing Machine Simulator")
 window.geometry('700x750')
 
 # titling the window
-title = Label(window, text="Turing Machine Simulator", width=700, anchor=N, background="#3caea3")
+title = Label(window, text="Turing Machine Simulator",
+              width=700, anchor=N, background="#3caea3")
 title.config(font=("Roboto", 20), foreground="white", padx=10, pady=10)
 title.pack(pady=(0, 20))
 
@@ -62,6 +68,8 @@ entry1 = ttk.Entry(frameInput, textvariable=input1)
 entry1.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
 
 # function to detect change in option
+
+
 def opt(event):
     global warning
     if operand.get() == "log(2)" or operand.get() == "!":
@@ -72,13 +80,16 @@ def opt(event):
         input1.set("positive integer")
         input2.set("positive integer")
     if operand.get() == "-":
-        warning = ttk.Label(frameWarning, text="Entry 1 must be equal or less than Entry 2 to proceed").pack(pady=10, side=BOTTOM)
+        warning = ttk.Label(frameWarning, text="Entry 1 must be equal or less than Entry 2 to proceed").pack(
+            pady=10, side=BOTTOM)
     else:
         for widget in frameWarning.winfo_children():
             widget.destroy()
 
+
 # INPUT | option(operand)
-option = ttk.OptionMenu(frameInput, operand,"+", "+", "-", "*", "/", "!", "%", "^", "log(2)", command=opt)
+option = ttk.OptionMenu(frameInput, operand, "+", "+",
+                        "-", "*", "/", "!", "%", "^", "log(2)", command=opt)
 option.pack(padx=20, pady=20, side=LEFT, anchor=CENTER)
 
 # INPUT | entry2(input2)
@@ -99,7 +110,8 @@ v.pack(side=RIGHT, fill=Y)
 h.pack(side=BOTTOM, fill=X)
 
 # making canvas for the tapes' drawings
-canvas = Canvas(frameOutput, width=550, height=400, yscrollcommand=v.set, xscrollcommand=h.set)
+canvas = Canvas(frameOutput, width=550, height=400,
+                yscrollcommand=v.set, xscrollcommand=h.set)
 canvas.pack()
 
 # assigning the scrollbar to the canvas
@@ -115,30 +127,34 @@ frameResult.pack(anchor=CENTER)
 ##################################################################
 
 # the function that responsible for drawing tapes
+
+
 def drawInline(inputLength, x1, x2, y1, y2, counter, tape, head):
-    for j in range (inputLength):
+    for j in range(inputLength):
         x1 += 20
         x2 += 20
         box = canvas.create_rectangle(x1, y1, x2+20, y2, fill="white smoke")
         label = canvas.create_text((x1+x2)/2 + 10, (y1+y2)/2, text=tape[j])
         if head == j:
             canvas.itemconfig(box, fill="yellow")
-        
+
         canvas.config(scrollregion=(0, 0, x1+40, y1+40))
         canvas.pack(expand=YES, fill=BOTH)
         counter += 1
-        
+
 ##################################################################
 
 # main function for starting the turing machine
+
+
 def caller():
     global temp1, temp2, head, state, tape, cells
     temp1, temp2 = "", ""
-    
+
     # converting GUI input to CLI input
-    for i in range (int(input1.get())):
+    for i in range(int(input1.get())):
         temp1 += "0"
-    for i in range (int(input2.get())):
+    for i in range(int(input2.get())):
         temp2 += "0"
 
     # + operation
@@ -165,24 +181,25 @@ def caller():
         while(oldHead != head):
             oldHead = head
             print(tape, ", head di index ", head, " pada state ", state)
-            drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+            drawInline(inputLength, x1, x2, y1+increment,
+                       y2+increment, 0, tape, head)
             increment += 40
             if state == 0:
                 if action('0', X, R, 1) or action(a, B, L, 5):
                     pass
-            
+
             elif state == 1:
                 if action('0', '0', R, 1) or action(a, a, R, 2):
                     pass
-            
+
             elif state == 2:
                 if action('0', '0', R, 2) or action(B, '0', L, 3):
                     pass
-            
+
             elif state == 3:
                 if action('0', '0', L, 3) or action(a, a, L, 4):
                     pass
-            
+
             elif state == 4:
                 if action('0', '0', L, 4) or action(X, X, R, 0):
                     pass
@@ -191,18 +208,20 @@ def caller():
                 if action(X, B, L, 5):
                     acc = True
                     pass
-        
+
         # make a counter for the 0's in the tape as the final result
         elements_count = collections.Counter(tape)
         if acc:
-            print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+            print("Input halt dan diterima di state: ", state,
+                  " dengan hasil: ", elements_count['0'])
             # RESULT | labels
             ttk.Label(frameResult, text="Result: ").pack(pady=10)
             ttk.Label(frameResult, text=elements_count['0']).pack()
         else:
             print("Input tidak diterima di state: ", state)
-            ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
-            ttk.Label(frameResult, text=state).pack()  
+            ttk.Label(frameResult, text="Input declined on state: ").pack(
+                pady=10)
+            ttk.Label(frameResult, text=state).pack()
 
     # / operation
     elif operand.get() == "/":
@@ -228,24 +247,25 @@ def caller():
         while(oldHead != head):
             oldHead = head
             print(tape, ", head di index ", head, " pada state ", state)
-            drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+            drawInline(inputLength, x1, x2, y1+increment,
+                       y2+increment, 0, tape, head)
             increment += 40
             if state == 0:
                 if action('0', B, R, 1) or action(d, B, R, 8):
                     pass
-            
+
             elif state == 1:
                 if action('0', '0', R, 1) or action(d, d, R, 2):
                     pass
-            
+
             elif state == 2:
                 if action('0', '0', R, 2) or action(X, X, R, 2) or action(Y, Y, L, 3) or action(B, B, L, 3):
                     pass
-            
+
             elif state == 3:
                 if action(X, X, L, 3) or action('0', X, L, 4):
                     pass
-            
+
             elif state == 4:
                 if action('0', '0', L, 6) or action(d, d, R, 5):
                     pass
@@ -272,13 +292,15 @@ def caller():
         # make a counter for the 0's in the tape as the final result
         elements_count = collections.Counter(tape)
         if acc:
-            print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+            print("Input halt dan diterima di state: ", state,
+                  " dengan hasil: ", elements_count['0'])
             # RESULT | labels
             ttk.Label(frameResult, text="Result: ").pack(pady=10)
             ttk.Label(frameResult, text=elements_count['0']).pack()
         else:
             print("Input tidak diterima di state: ", state)
-            ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+            ttk.Label(frameResult, text="Input declined on state: ").pack(
+                pady=10)
             ttk.Label(frameResult, text=state).pack()
 
     # % operation
@@ -306,24 +328,25 @@ def caller():
             while(oldHead != head):
                 oldHead = head
                 print(tape, ", head di index ", head, " pada state ", state)
-                drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+                drawInline(inputLength, x1, x2, y1+increment,
+                           y2+increment, 0, tape, head)
                 increment += 40
                 if state == 0:
                     if action('0', '0', R, 0) or action(m, m, R, 1):
                         pass
-        
+
                 elif state == 1:
                     if action('0', '0', R, 1) or action(B, m, L, 2):
                         pass
-                
+
                 elif state == 2:
                     if action(m, m, R, 7) or action('0', X, L, 3):
                         pass
-                
+
                 elif state == 3:
                     if action('0', '0', L, 3) or action(m, m, L, 4):
                         pass
-                
+
                 elif state == 4:
                     if action(B, B, R, 8) or action(Y, Y, L, 4) or action('0', Y, R, 5):
                         pass
@@ -333,7 +356,7 @@ def caller():
                         pass
 
                 elif state == 6:
-                    if action('0', '0', R, 6) or action(X, X, L, 2):    
+                    if action('0', '0', R, 6) or action(X, X, L, 2):
                         pass
 
                 elif state == 7:
@@ -347,7 +370,7 @@ def caller():
                 elif state == 9:
                     if action('0', B, R, 9) or action(X, '0', R, 9) or action(m, B, L, 10):
                         pass
-                
+
                 elif state == 10:
                     if action('0', B, L, 11):
                         pass
@@ -358,13 +381,15 @@ def caller():
             # make a counter for the 0's in the tape as the final result
             elements_count = collections.Counter(tape)
             if acc:
-                print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+                print("Input halt dan diterima di state: ", state,
+                      " dengan hasil: ", elements_count['0'])
                 # RESULT | labels
                 ttk.Label(frameResult, text="Result: ").pack(pady=10)
                 ttk.Label(frameResult, text=elements_count['0']).pack()
             else:
                 print("Input tidak diterima di state: ", state)
-                ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+                ttk.Label(frameResult, text="Input declined on state: ").pack(
+                    pady=10)
                 ttk.Label(frameResult, text=state).pack()
         else:
             print("Input tidak bisa diproses")
@@ -393,24 +418,25 @@ def caller():
             while(oldHead != head):
                 oldHead = head
                 print(tape, ", head di index ", head, " pada state ", state)
-                drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+                drawInline(inputLength, x1, x2, y1+increment,
+                           y2+increment, 0, tape, head)
                 increment += 40
                 if state == 0:
                     if action('0', '0', R, 1) or action(B, B, R, 12):
                         pass
-                
+
                 elif state == 1:
                     if action('0', '0', R, 2) or action(B, B, L, 11):
                         pass
-                
+
                 elif state == 2:
                     if action('0', X, R, 3) or action(B, B, L, 11):
                         pass
-                
+
                 elif state == 3:
                     if action(X, X, R, 3) or action('0', X, L, 4) or action(B, B, L, 7):
                         pass
-                
+
                 elif state == 4:
                     if action(Y, Y, L, 4) or action('0', '0', L, 4) or action(X, X, L, 4) or action(B, B, R, 5):
                         pass
@@ -420,7 +446,7 @@ def caller():
                         pass
 
                 elif state == 6:
-                    if action(Y, Y, R, 6) or action('0', '0', R, 6) or action(X, X, R, 3):    
+                    if action(Y, Y, R, 6) or action('0', '0', R, 6) or action(X, X, R, 3):
                         pass
 
                 elif state == 7:
@@ -434,7 +460,7 @@ def caller():
                 elif state == 9:
                     if action(Y, '0', R, 9) or action('0', '0', R, 10) or action(B, B, L, 11):
                         pass
-                
+
                 elif state == 10:
                     if action(Y, '0', R, 10) or action('0', '0', R, 10) or action(B, B, R, 12):
                         pass
@@ -442,20 +468,22 @@ def caller():
                 elif state == 11:
                     if action('0', B, R, 12):
                         pass
-            
+
                 elif state == 12:
                     acc = True
 
             # make a counter for the 0's in the tape as the final result
             elements_count = collections.Counter(tape)
             if acc:
-                print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+                print("Input halt dan diterima di state: ", state,
+                      " dengan hasil: ", elements_count['0'])
                 # RESULT | labels
                 ttk.Label(frameResult, text="Result: ").pack(pady=10)
                 ttk.Label(frameResult, text=elements_count['0']).pack()
             else:
                 print("Input tidak diterima di state: ", state)
-                ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+                ttk.Label(frameResult, text="Input declined on state: ").pack(
+                    pady=10)
                 ttk.Label(frameResult, text=state).pack()
         else:
             print("Input tidak bisa diproses")
@@ -484,28 +512,29 @@ def caller():
             while(oldHead != head):
                 oldHead = head
                 print(tape, ", head di index ", head, " pada state ", state)
-                drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+                drawInline(inputLength, x1, x2, y1+increment,
+                           y2+increment, 0, tape, head)
                 increment += 40
                 if state == 0:
                     if action('0', '0', R, 0) or action(X, X, R, 1):
                         pass
-        
+
                 elif state == 1:
                     if action('0', '0', R, 1) or action(B, B, L, 2):
                         pass
-                
+
                 elif state == 2:
-                    if action('0', B, L, 3) or action(X, B, L,6):
+                    if action('0', B, L, 3) or action(X, B, L, 6):
                         pass
-                
+
                 elif state == 3:
                     if action('0', '0', L, 3) or action(X, X, L, 4):
                         pass
-                
+
                 elif state == 4:
                     if action('0', '0', L, 4) or action(B, B, R, 5):
                         pass
-                
+
                 elif state == 5:
                     if action('0', B, R, 0):
                         pass
@@ -513,17 +542,18 @@ def caller():
                 elif state == 6:
                     acc = True
 
-
             # make a counter for the 0's in the tape as the final result
             elements_count = collections.Counter(tape)
             if acc:
-                print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+                print("Input halt dan diterima di state: ", state,
+                      " dengan hasil: ", elements_count['0'])
                 # RESULT | labels
                 ttk.Label(frameResult, text="Result: ").pack(pady=10)
                 ttk.Label(frameResult, text=elements_count['0']).pack()
             else:
                 print("Input tidak diterima di state: ", state)
-                ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+                ttk.Label(frameResult, text="Input declined on state: ").pack(
+                    pady=10)
                 ttk.Label(frameResult, text=state).pack()
         else:
             print("Input tidak bisa diproses")
@@ -554,24 +584,25 @@ def caller():
             while(oldHead != head):
                 oldHead = head
                 print(tape, ", head di index ", head, " pada state ", state)
-                drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+                drawInline(inputLength, x1, x2, y1+increment,
+                           y2+increment, 0, tape, head)
                 increment += 40
                 if state == 0:
                     if action('0', '0', R, 0) or action(B, '1', L, 1):
                         pass
-    
+
                 elif state == 1:
                     if action('0', '0', L, 1) or action('1', '1', L, 1) or action(B, B, R, 2):
                         pass
-                
+
                 elif state == 2:
                     if action('1', '1', R, 5) or action('0', X, R, 3):
                         pass
-                
+
                 elif state == 3:
                     if action('0', '0', R, 3) or action('1', '1', R, 3) or action(B, '0', L, 4):
                         pass
-                
+
                 elif state == 4:
                     if action('0', '0', L, 4) or action('1', '1', L, 4) or action(X, X, R, 2):
                         pass
@@ -581,7 +612,7 @@ def caller():
                         pass
 
                 elif state == 6:
-                    if action('1', '1', L, 6) or action(X, X, L, 6) or action('0', '0', L, 6) or action(B, B, R, 16):    
+                    if action('1', '1', L, 6) or action(X, X, L, 6) or action('0', '0', L, 6) or action(B, B, R, 16):
                         pass
 
                 elif state == 7:
@@ -595,7 +626,7 @@ def caller():
                 elif state == 9:
                     if action('0', X, R, 10) or action('1', '1', L, 6):
                         pass
-                
+
                 elif state == 10:
                     if action('1', '1', R, 11) or action('0', '0', R, 10):
                         pass
@@ -607,19 +638,19 @@ def caller():
                 elif state == 12:
                     if action('0', '0', R, 12) or action('1', '1', R, 12) or action(B, '0', L, 13):
                         pass
-                
+
                 elif state == 13:
                     if action('1', '1', L, 13) or action('0', '0', L, 13) or action(X, X, R, 11):
                         pass
-                
+
                 elif state == 14:
                     if action(X, '0', L, 14) or action('1', '1', L, 15):
                         pass
-                
+
                 elif state == 15:
                     if action('0', '0', L, 15) or action('1', '0', L, 15) or action(X, X, R, 9):
                         pass
-                
+
                 elif state == 16:
                     if action('1', B, R, 25) or action(X, B, R, 17):
                         pass
@@ -629,7 +660,7 @@ def caller():
                         pass
 
                 elif state == 18:
-                    if action('0', B, R, 18) or action(X, X, R, 22) or action('1', B, L, 24):    
+                    if action('0', B, R, 18) or action(X, X, R, 22) or action('1', B, L, 24):
                         pass
 
                 elif state == 19:
@@ -643,7 +674,7 @@ def caller():
                 elif state == 21:
                     if action(X, X, L, 21) or action('0', X, L, 6) or action('1', X, L, 6):
                         pass
-                
+
                 elif state == 22:
                     if action(X, X, R, 22) or action('1', '1', R, 22) or action('0', '0', R, 22) or action(B, '1', L, 23):
                         pass
@@ -662,13 +693,15 @@ def caller():
             # make a counter for the 0's in the tape as the final result
             elements_count = collections.Counter(tape)
             if acc:
-                print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+                print("Input halt dan diterima di state: ", state,
+                      " dengan hasil: ", elements_count['0'])
                 # RESULT | labels
                 ttk.Label(frameResult, text="Result: ").pack(pady=10)
                 ttk.Label(frameResult, text=elements_count['0']).pack()
             else:
                 print("Input tidak diterima di state: ", state)
-                ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+                ttk.Label(frameResult, text="Input declined on state: ").pack(
+                    pady=10)
                 ttk.Label(frameResult, text=state).pack()
         else:
             print("Input tidak bisa diproses")
@@ -696,24 +729,25 @@ def caller():
         while(oldHead != head):
             oldHead = head
             print(tape, ", head di index ", head, " pada state ", state)
-            drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+            drawInline(inputLength, x1, x2, y1+increment,
+                       y2+increment, 0, tape, head)
             increment += 40
             if state == 0:
                 if action(C, B, R, 31) or action('0', X, R, 1):
                     pass
-    
+
             elif state == 1:
                 if action(C, C, R, 1) or action('0', '0', R, 1) or action(B, C, L, 2):
                     pass
-            
+
             elif state == 2:
                 if action(C, C, L, 2) or action('0', '0', L, 2) or action(X, X, R, 3):
                     pass
-            
+
             elif state == 3:
                 if action(C, B, L, 13) or action('0', X, R, 4):
                     pass
-            
+
             elif state == 4:
                 if action(C, C, R, 5) or action('0', '0', R, 4):
                     pass
@@ -723,7 +757,7 @@ def caller():
                     pass
 
             elif state == 6:
-                if action(C, C, R, 7) or action('0', '0', R, 6):    
+                if action(C, C, R, 7) or action('0', '0', R, 6):
                     pass
 
             elif state == 7:
@@ -737,7 +771,7 @@ def caller():
             elif state == 9:
                 if action(C, C, R, 9) or action('0', '0', R, 9) or action(B, C, L, 10):
                     pass
-            
+
             elif state == 10:
                 if action(C, C, L, 10) or action('0', '0', L, 10) or action(Y, '0', L, 11):
                     pass
@@ -749,19 +783,19 @@ def caller():
             elif state == 12:
                 if action('0', '0', L, 12) or action(X, X, R, 2):
                     pass
-            
+
             elif state == 13:
                 if action(X, B, L, 13) or action(B, B, R, 14):
                     pass
-            
+
             elif state == 14:
                 if action('0', X, R, 15) or action(B, B, R, 14):
                     pass
-            
+
             elif state == 15:
                 if action(C, C, R, 16) or action('0', '0', R, 15):
                     pass
-            
+
             elif state == 16:
                 if action(C, C, L, 20) or action('0', Y, R, 17) or action(Y, Y, R, 16) or action(B, B, L, 29):
                     pass
@@ -771,7 +805,7 @@ def caller():
                     pass
 
             elif state == 18:
-                if action(C, C, R, 18) or action('0', '0', R, 18) or action(B, '0', L, 19):    
+                if action(C, C, R, 18) or action('0', '0', R, 18) or action(B, '0', L, 19):
                     pass
 
             elif state == 19:
@@ -785,7 +819,7 @@ def caller():
             elif state == 21:
                 if action('0', '0', L, 22) or action(X, B, L, 23):
                     pass
-            
+
             elif state == 22:
                 if action('0', '0', L, 22) or action(X, X, R, 14):
                     pass
@@ -805,7 +839,7 @@ def caller():
             elif state == 26:
                 if action(C, C, R, 27) or action('0', '0', R, 26) or action(B, B, L, 32):
                     pass
-            
+
             elif state == 27:
                 if action(C, C, R, 27) or action('0', '0', R, 27) or action(B, C, L, 28):
                     pass
@@ -832,13 +866,15 @@ def caller():
         # make a counter for the 0's in the tape as the final result
         elements_count = collections.Counter(tape)
         if acc:
-            print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+            print("Input halt dan diterima di state: ", state,
+                  " dengan hasil: ", elements_count['0'])
             # RESULT | labels
             ttk.Label(frameResult, text="Result: ").pack(pady=10)
             ttk.Label(frameResult, text=elements_count['0']).pack()
         else:
             print("Input tidak diterima di state: ", state)
-            ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+            ttk.Label(frameResult, text="Input declined on state: ").pack(
+                pady=10)
             ttk.Label(frameResult, text=state).pack()
 
     # * operation
@@ -865,7 +901,8 @@ def caller():
         while(oldHead != head and head != -1):
             oldHead = head
             print(tape, ", head di index ", head, " pada state ", state)
-            drawInline(inputLength, x1, x2, y1+increment, y2+increment, 0, tape, head)
+            drawInline(inputLength, x1, x2, y1+increment,
+                       y2+increment, 0, tape, head)
             increment += 40
             if state == 0:
                 if action('0', '0', R, 0) or action(m, m, R, 1):
@@ -894,7 +931,7 @@ def caller():
             elif state == 6:
                 if action(Y, Y, R, 6) or action(m, m, R, 7):
                     pass
-            
+
             elif state == 7:
                 if action('0', '0', R, 7) or action(X, X, R, 7) or action(m, m, R, 8):
                     pass
@@ -916,10 +953,10 @@ def caller():
                     pass
 
             elif state == 12:
-                if action('0', '0', L, 13)or action(X, B, L, 13) or action(m, B, L, 13) or action('0', B, L, 13):
+                if action('0', '0', L, 13) or action(X, B, L, 13) or action(m, B, L, 13) or action('0', B, L, 13):
                     acc = False
                     pass
-            
+
             elif state == 13:
                 if action(B, B, L, 12) or action(X, B, L, 13) or action(m, B, L, 13) or action('0', B, L, 13):
                     acc = True
@@ -928,13 +965,15 @@ def caller():
         # make a counter for the 0's in the tape as the final result
         elements_count = collections.Counter(tape)
         if acc:
-            print("Input halt dan diterima di state: ", state, " dengan hasil: ", elements_count['0'])
+            print("Input halt dan diterima di state: ", state,
+                  " dengan hasil: ", elements_count['0'])
             # RESULT | labels
             ttk.Label(frameResult, text="Result: ").pack(pady=10)
             ttk.Label(frameResult, text=elements_count['0']).pack()
         else:
             print("Input tidak diterima di state: ", state)
-            ttk.Label(frameResult, text="Input declined on state: ").pack(pady=10)    
+            ttk.Label(frameResult, text="Input declined on state: ").pack(
+                pady=10)
             ttk.Label(frameResult, text=state).pack()
 
 
